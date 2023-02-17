@@ -38,8 +38,35 @@ public enum SCommandArgumentType {
         }catch (Exception e){
             return false;
         }
-    });
+    }),
 
+    INTEGER(null,
+            checkingString -> {
+        try{
+            Integer.parseInt(checkingString);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }),
+    LONG(null,
+            checkingString -> {
+        try{
+            Long.parseLong(checkingString);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }),
+    DOUBLE(null,
+            checkingString -> {
+                try{
+                    Double.parseDouble(checkingString);
+                    return true;
+                }catch (Exception e){
+                    return false;
+                }
+            });
 
     Function<CommandSender, ArrayList<String>> allowedString = null;
     Function<String, Boolean> argumentParser = null;
