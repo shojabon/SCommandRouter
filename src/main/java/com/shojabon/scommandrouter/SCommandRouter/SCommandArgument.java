@@ -17,6 +17,7 @@ public class SCommandArgument {
     private ArrayList<String> deprecated = new ArrayList<>();
 
     private Function<CommandSender, ArrayList<String>> allowedStringsFunction = null;
+    private Function<CommandSender, ArrayList<String>> aliasStringsFunction = null;
     private Function<String, Boolean> argumentParser = null;
 
     public SCommandObject rootCommandObject;
@@ -51,11 +52,29 @@ public class SCommandArgument {
         return this;
     }
 
+    public SCommandArgument aliasStringsFunction(Function<CommandSender, ArrayList<String>> function){
+        this.aliasStringsFunction = function;
+        return this;
+    }
+
     public ArrayList<String> getAllowedStrings(CommandSender sender){
         ArrayList<String> results = new ArrayList<>(allowedStrings);
         if(allowedStringsFunction != null){
             try{
                 results.addAll(allowedStringsFunction.apply(sender));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return results;
+    }
+
+    public ArrayList<String> getAliasStrings(CommandSender sender){
+        ArrayList<String> results = new ArrayList<>();
+        if(alias != null) results.add(alias);
+        if(aliasStringsFunction != null){
+            try{
+                results.addAll(aliasStringsFunction.apply(sender));
             }catch (Exception e){
                 e.printStackTrace();
             }

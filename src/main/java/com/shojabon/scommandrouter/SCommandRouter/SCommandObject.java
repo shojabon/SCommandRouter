@@ -66,10 +66,21 @@ public class SCommandObject {
         return this;
     }
 
+    public SCommandObject argument(String alias, Function<CommandSender, ArrayList<String>> function, boolean strict){
+        if(strict){
+            arguments.add(new SCommandArgument()
+                    .alias(alias)
+                    .allowedStringsFunction(function));
+        }else{
+            arguments.add(new SCommandArgument()
+                    .alias(alias)
+                    .aliasStringsFunction(function));
+        }
+        return this;
+    }
+
     public SCommandObject argument(String alias, Function<CommandSender, ArrayList<String>> function){
-        arguments.add(new SCommandArgument()
-                .alias(alias)
-                .allowedStringsFunction(function));
+        this.argument(alias, function, true);
         return this;
     }
 

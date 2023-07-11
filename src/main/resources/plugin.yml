@@ -1,6 +1,4 @@
 name: SCommandRouter
 version: '${version}'
 main: com.shojabon.scommandrouter.SCommandRouterMain
-api-version: 1.17
-commands:
-  demo:
+api-version: 1.19

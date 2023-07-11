@@ -43,7 +43,9 @@ public abstract class SCommandRouter implements @Nullable CommandExecutor, @Null
         String label = splitCommands[0];
         String[] args = Arrays.copyOfRange(splitCommands, 1, splitCommands.length);
         SCommandData commandData = new SCommandData(executor, Bukkit.getPluginCommand(label), label, args);
-        for(SCommandObject commandObject: commands.get(label)){
+        ArrayList<SCommandObject> commands = SCommandRouter.commands.get(label);
+        if(commands == null || commands.size() == 0) return;
+        for(SCommandObject commandObject: commands){
             if(commandObject.matches(args, executor)) {
 
                 //permission
@@ -59,11 +61,11 @@ public abstract class SCommandRouter implements @Nullable CommandExecutor, @Null
     }
 
     public void addCommand(SCommandObject command){
-        if(!commands.containsKey(commandName)){
-            commands.put(commandName, new ArrayList<>());
+        if(!SCommandRouter.commands.containsKey(commandName)){
+            SCommandRouter.commands.put(commandName, new ArrayList<>());
         }
-        if(commands.get(commandName).contains(command)) return;
-        commands.get(commandName).add(command);
+        if(SCommandRouter.commands.get(commandName).contains(command)) return;
+        SCommandRouter.commands.get(commandName).add(command);
     }
 
     public void setOnNoCommandFoundEvent(Consumer<SCommandData> event){
@@ -107,8 +109,9 @@ public abstract class SCommandRouter implements @Nullable CommandExecutor, @Null
             }
             if(commandObject.validOption(args, sender)) {
                 SCommandArgument argument = commandObject.arguments.get(args.length-1);
-                if(argument.alias != null) result.add(argument.alias);
+                result.addAll(argument.getAliasStrings(sender));
                 result.addAll(argument.getAllowedStrings(sender));
+
             }
         }
 
