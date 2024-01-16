@@ -8,7 +8,7 @@ public final class SCommandRouterMain extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        new DemoCommandRouterJava(this);
+//        new DemoCommandRouterJava(this);
 
 
     }

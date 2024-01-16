@@ -68,6 +68,21 @@ public abstract class SCommandRouter implements @Nullable CommandExecutor, @Null
         SCommandRouter.commands.get(commandName).add(command);
     }
 
+    public static void addVirtualCommand(String commandName, SCommandObject command){
+        if(!SCommandRouter.commands.containsKey(commandName)){
+            SCommandRouter.commands.put(commandName, new ArrayList<>());
+        }
+        if(SCommandRouter.commands.get(commandName).contains(command)) return;
+        SCommandRouter.commands.get(commandName).add(command);
+    }
+
+    public static void clearVirtualCommand(String commandName){
+        if(!SCommandRouter.commands.containsKey(commandName)){
+            SCommandRouter.commands.put(commandName, new ArrayList<>());
+        }
+        SCommandRouter.commands.get(commandName).clear();
+    }
+
     public void setOnNoCommandFoundEvent(Consumer<SCommandData> event){
         onNoCommandFoundEvent = event;
     }
@@ -99,8 +114,14 @@ public abstract class SCommandRouter implements @Nullable CommandExecutor, @Null
         return false;
     }
 
+
+
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        return tabComplete(commandName, sender, args);
+    }
+
+    public static List<String> tabComplete(String commandName, CommandSender sender, String[] args){
         List<String> result = new ArrayList<>();
         for(SCommandObject commandObject: commands.get(commandName)){
             if(commandObject.permission != null){
@@ -114,8 +135,9 @@ public abstract class SCommandRouter implements @Nullable CommandExecutor, @Null
 
             }
         }
-
-        return result;
+        String currentlyEditing = args[args.length-1];
+        // select partial matches equals ignore case
+        return result.stream().filter(e -> e.toLowerCase().contains(currentlyEditing.toLowerCase())).toList();
     }
 
     //help
